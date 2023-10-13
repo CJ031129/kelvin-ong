@@ -1,137 +1,31 @@
-package kk;
+Introduction
+The "Hotel Management System" is a Java program designed to help hotel administrators manage and maintain guest records. This program allows for the creation of new entries with details such as guest name, phone number, email, identification card, total days of stay, date of stay, room type, room number, payment amount, and payment method. Users can also extract and display entries by name, providing a simple yet effective way to manage hotel records.
 
-import java.io.*;
-import java.util.Scanner;
 
-public class HotelManagementSystem {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+Algorithm Design
+The Hotel Management System program uses a simple menu-driven approach:
 
-        String csvFilePath = "HotelRecords.csv";
+It offers three options: adding a new entry, extracting and displaying entries by name, and exiting the program.
+Data is stored in a CSV (Comma-Separated Values) file format, where each line represents an entry with various details.
+The program uses file I/O operations for reading from and writing to the CSV file.
+Entry data is collected from the user, validated, and then written to the file.
+When searching for entries by name, the program reads through the file, splits each line, and compares the name provided with the names in the entries.
 
-        while (true) {
-            System.out.println("Hotel Management System Menu:");
-            System.out.println("1. Add Entry");
-            System.out.println("2. Extract and Display Entries by Name");
-            System.out.println("3. Exit");
-            System.out.print("Enter your choice (1/2/3): ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline character
 
-            switch (choice) {
-                case 1:
-                    addEntry(csvFilePath, scanner);
-                    break;
-                case 2:
-                    extractAndDisplayByName(csvFilePath, scanner);
-                    break;
-                case 3:
-                    System.out.println("Exiting the program.");
-                    System.exit(0);
-                default:
-                    System.out.println("Invalid choice. Please choose 1, 2, or 3.");
-            }
-        }
-    }
+Benefits of the Java Program
+The "Hotel Management System" Java program offers several benefits:
 
-    private static void addEntry(String csvFilePath, Scanner scanner) {
-        try (FileWriter writer = new FileWriter(csvFilePath, true)) {
-            System.out.println("Enter details for the new entry:");
-            System.out.print("Name: ");
-            String name = scanner.nextLine();
-            System.out.print("Phone Number: ");
-            String phoneNumber = scanner.nextLine();
-            System.out.print("Email: ");
-            String email = scanner.nextLine();
-            System.out.print("ID Card: ");
-            String idCard = scanner.nextLine();
+Simplicity: The program provides a straightforward and user-friendly interface for managing hotel guest records, making it accessible to individuals with varying levels of technical expertise.
 
-            int totalDays = getNumericInput("Total Days of Stay: ", scanner);
-            int dateOfStay = getNumericInput("Date of Stay (YYYY-MM-DD): ", scanner);
+Data Persistence: Entries are stored in a CSV file, ensuring data persistence between program runs.
 
-            System.out.print("Room Type: ");
-            String roomType = scanner.nextLine();
+Flexibility: Users can add new entries or search for existing ones based on guest names.
 
-            int roomNumber = getNumericInput("Room Number: ", scanner);
-            double paymentAmount = getDoubleInput("Payment Amount: ", scanner);
+No External Libraries: The program demonstrates how to work with file I/O and does not rely on external libraries, making it a good example for learning basic Java programming.
 
-            System.out.print("Payment Method: ");
-            String paymentMethod = scanner.nextLine();
 
-            String entry = String.join(",", name, phoneNumber, email, idCard, Integer.toString(totalDays),
-                     roomType, Integer.toString(roomNumber), Double.toString(paymentAmount), paymentMethod);
 
-            writer.append(entry).append("\n");
-            System.out.println("Entry added successfully.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+Conclusion
+The "Hotel Management System" Java program serves as a practical example of a simple record management system. It allows users to efficiently store, retrieve, and manage hotel guest records. While it may not offer the full feature set of a professional hotel management system, it demonstrates fundamental concepts for working with data, user interfaces, and file I/O in Java. This program is a valuable resource for learners and developers looking to understand basic data management and Java programming concepts.
 
-    // Utility method to get integer input and validate it
-    private static int getNumericInput(String prompt, Scanner scanner) {
-        while (true) {
-            System.out.print(prompt);
-            String input = scanner.nextLine();
-            if (input.matches("^\\d+$")) {
-                return Integer.parseInt(input);
-            } else {
-                System.out.println("Only numbers are allowed. Please enter a valid number.");
-            }
-        }
-    }
-
-    // Utility method to get double input and validate it
-    private static double getDoubleInput(String prompt, Scanner scanner) {
-        while (true) {
-            System.out.print(prompt);
-            String input = scanner.nextLine();
-            if (input.matches("^[0-9]+(\\.\\d+)?$")) {
-                return Double.parseDouble(input);
-            } else {
-                System.out.println("Only numbers are allowed. Please enter a valid number.");
-            }
-        }
-    }
-
-    private static void extractAndDisplayByName(String csvFilePath, Scanner scanner) {
-        System.out.print("Enter the name to search: ");
-        String searchName = scanner.nextLine();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(csvFilePath))) {
-            String line;
-            boolean found = false;
-
-            System.out.println("Entries for " + searchName + ":");
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts[0].equalsIgnoreCase(searchName)) {
-                    displayEntry(parts);
-                    found = true;
-                }
-            }
-
-            if (!found) {
-                System.out.println("No entries found for " + searchName + ".");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void displayEntry(String[] parts) {
-    	System.out.println("--------------------------");
-        System.out.println("Name: " + parts[0]);
-        System.out.println("Phone Number: " + parts[1]);
-        System.out.println("Email: " + parts[2]);
-        System.out.println("ID Card: " + parts[3]);
-        System.out.println("Total Days of Stay: " + parts[4]);
-        System.out.println("Date of Stay: " + parts[5]);
-        System.out.println("Room Type: " + parts[6]);
-        System.out.println("Room Number: " + parts[7]);
-        System.out.println("Payment Amount: " + parts[8]);
-        System.out.println("Payment Method: " + parts[9]);
-        System.out.println("--------------------------");
-    }
-}
